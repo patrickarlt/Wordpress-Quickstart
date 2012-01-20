@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Awesome Facebook Plugin
-Plugin URI: http://developers.facebook.com/docs/reference/plugins/like#
-Description: Pulls fb statuses and caches.
+Plugin URI: http://developers.facebook.com/docs/reference/plugins/like
+Description: Show Latest Facebook Updates.
 Author: Patrick Arlt
 Version: 0.01
 Author URI: http://patrickarlt.com
