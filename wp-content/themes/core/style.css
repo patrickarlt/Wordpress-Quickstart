@@ -1,0 +1,68 @@
+/*********************
+Theme Name: Wordpress Quickstart Theme
+Theme URI: https://github.com/patrickarlt/Wordpress-Quickstart
+Description: A Generic Wordpress installation with HTML5 Boilerplate
+Author: Patrick Arlt
+Author URI: http://patrickarlt.com/
+*********************/
+
+/*********************
+@imports
+*********************/
+
+	@import url('css/reset.css');
+
+/*********************
+Selection Colors
+*********************/
+
+  /** Webkit **/
+	::selection { background: #ffb7b7; }
+	
+	img::selection { background: transparent; }
+	
+  /** Firefox **/
+	::-moz-selection { background: #ffb7b7; }
+	
+	img::-moz-selection { background: transparent; }
+
+/*********************
+Placeholder Styles
+*********************/
+	
+  /** Webkit **/
+	::-webkit-input-placeholder { color: red; }
+	
+  /** Firefox **/
+	:-moz-placeholder { color: red; }
+
+  /** Placeholder Shim **/
+  input.placeholder { color:red; }
+
+/*********************
+Worpdress Styles
+*********************/
+
+.aligncenter {
+	
+}
+
+.alignleft {
+
+}
+
+.alignright {
+
+}
+
+.wp-caption {
+
+}
+
+.wp-caption img {
+
+}
+
+.wp-caption-dd {
+
+}

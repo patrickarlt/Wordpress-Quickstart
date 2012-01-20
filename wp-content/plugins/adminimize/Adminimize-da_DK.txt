@@ -1,4 +1,4 @@
-Adminimize 1.7.9
+Adminimize 1.7.24
 
 Filerne skal ligge i mappen adminimize/languages
 

@@ -17,7 +17,7 @@ if ( ! function_exists( 'add_action' ) ) {
 					<br class="clear" />
 					
 					<?php if ( ! isset($_POST['_mw_adminimize_action']) || !($_POST['_mw_adminimize_action'] == '_mw_adminimize_load_theme') ) { ?>
-					<form name="set_theme" method="post" id="_mw_adminimize_set_theme" action="?page=<?php echo $_GET['page'];?>" >
+					<form name="set_theme" method="post" id="_mw_adminimize_set_theme" action="?page=<?php echo esc_attr( $_GET['page'] ); ?>" >
 							<?php wp_nonce_field('mw_adminimize_nonce'); ?>
 							<p><?php _e('For better peformance with many users on your blog; load only userlist, when you will change the theme options for users.', FB_ADMINIMIZE_TEXTDOMAIN ); ?></p>
 							<p id="submitbutton">
@@ -27,7 +27,7 @@ if ( ! function_exists( 'add_action' ) ) {
 					</form>
 					<?php }
 					if (  isset($_POST['_mw_adminimize_action']) && ($_POST['_mw_adminimize_action'] == '_mw_adminimize_load_theme') ) { ?>
-						<form name="set_theme" method="post" id="_mw_adminimize_set_theme" action="?page=<?php echo $_GET['page'];?>" >
+						<form name="set_theme" method="post" id="_mw_adminimize_set_theme" action="?page=<?php echo esc_attr( $_GET['page'] ); ?>" >
 							<?php wp_nonce_field('mw_adminimize_nonce'); ?>
 							<table class="widefat">
 								<thead>

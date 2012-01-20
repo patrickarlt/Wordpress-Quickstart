@@ -53,7 +53,7 @@ foreach ( get_post_types( $args ) as $post_type ) {
 								'#slugdiv,#edit-slug-box',
 								'#misc-publishing-actions',
 								'#commentstatusdiv',
-								'#editor-toolbar #edButtonHTML, #quicktags'
+								'#editor-toolbar #edButtonHTML, #quicktags, #content-html'
 							);
 							
 							foreach ( $GLOBALS['_wp_post_type_features'][$post_type] as $post_type_support => $key ) {

@@ -16,7 +16,7 @@ if ( ! function_exists( 'add_action' ) ) {
 				<div class="inside">
 
 					<p><?php _e('Use this option for clean your database from all entries of this plugin. When you deactivate the plugin, the deinstall of the plugin <strong>clean not</strong> all entries in the database.', FB_ADMINIMIZE_TEXTDOMAIN ); ?></p>
-					<form name="deinstall_options" method="post" id="_mw_adminimize_options_deinstall" action="?page=<?php echo $_GET['page'];?>">
+					<form name="deinstall_options" method="post" id="_mw_adminimize_options_deinstall" action="?page=<?php echo esc_attr( $_GET['page'] );?>">
 						<?php wp_nonce_field('mw_adminimize_nonce'); ?>
 						<p id="submitbutton">
 							<input type="submit" name="_mw_adminimize_deinstall" value="<?php _e('Delete Options', FB_ADMINIMIZE_TEXTDOMAIN ); ?> &raquo;" class="button-secondary" />

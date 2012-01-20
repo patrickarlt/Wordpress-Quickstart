@@ -3,20 +3,18 @@ Contributors: bradvin
 Donate link: http://themergency.com/donate/
 Tags: twitter, blackbird pie, blackbirdpie
 Requires at least: 3.0
-Tested up to: 3.1.1
-Stable tag: 0.5.1
+Tested up to: 3.3
+Stable tag: 0.5.3
 
 Add awesome looking embedded HTML representations of actual tweets in your blog posts just by adding simple shortcodes.
 
 == Description ==
 
-** Now with Twitter Web Intents http://dev.twitter.com/pages/intents **
-
 Add awesome looking embedded HTML representations of actual tweets in your blog posts just by adding simple shortcodes. Please read the blog post at http://themergency.com/twitter-blackbrid-pie-wordpress-plugin-03/ for more info and see a demo of the plugin in action at http://themergency.com/twitter-blackbird-pie-wordpress-plugin-demo/.
 
-Big thanks must go out to Justin Shreve (http://justin.gs/) from Automattic, who let me reuse his code from the WordPress.com version of the Blackbird Pie plugin.
+Image source: http://www.flickr.com/photos/sashafatcat/4533486919/
 
-The plugins has the following features:
+The plugin has the following features:
 
 *   Supports Twitter Web Intents http://dev.twitter.com/pages/intents
 *   TinyMCE editor button to easily search and embed a tweet
@@ -50,6 +48,14 @@ The plugins has the following features:
 5. Twitter field added to WordPress user profile
 
 == Changelog ==
+
+= 0.5.3 =
+* Fixed bug where the URL shortcode was not working
+
+= 0.5.2 =
+* Removed donate button from popup in tinyMCE editor
+* Removed code causing massive database queries
+* removed limitation of regisitering the shortcode only on the frontend, so it works with admin-ajax.php calls
 
 = 0.5.1 =
 * Adds a twitter field in the user profile page so each user can capture their twitter username. This username is then used as the 'related' user for web intents. 

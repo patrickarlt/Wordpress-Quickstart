@@ -24,6 +24,11 @@ A nice utility for setting and reading cookies.
 http://plugins.jquery.com/project/Cookie
 MIT license
 
+jquery.mousewheel.js
+This library handles mousewhere integration for the calendar.
+http://brandonaaron.net/code/mousewheel/demos
+MIT License
+
 timePicker.css
 jquery.timepicker.js
 The JQuery time picker shows a nice time picker when you edit the post time.

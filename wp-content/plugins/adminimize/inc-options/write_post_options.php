@@ -54,7 +54,7 @@ if ( ! function_exists( 'add_action' ) ) {
 								'#slugdiv,#edit-slug-box',
 								'#misc-publishing-actions',
 								'#commentstatusdiv',
-								'#editor-toolbar #edButtonHTML, #quicktags'
+								'#editor-toolbar #edButtonHTML, #quicktags, #content-html'
 							);
 
 							if ( function_exists('current_theme_supports') && current_theme_supports( 'post-thumbnails', 'post' ) )

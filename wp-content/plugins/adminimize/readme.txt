@@ -3,8 +3,8 @@ Contributors: Bueltge
 Donate link: http://bueltge.de/wunschliste/
 Tags: color, scheme, theme, admin, dashboard, color scheme, plugin, interface, ui, metabox, hide, editor, minimal, menu, customization, interface, administration, lite, light, usability, lightweight, layout, zen
 Requires at least: 2.5
-Tested up to: 3.2-RC2
-Stable tag: 1.7.12
+Tested up to: 3.3.1
+Stable tag: 1.7.24
 
 Adminimize is a WordPress plugin that lets you hide 'unnecessary' items from the WordPress backend and many many more ...
 
@@ -33,8 +33,6 @@ Also it is possible with version 1.7.18 to use on custom post types; hide 'unnec
 
 = Requirements =
 1. WordPress version 2.5 and later
-
-Please visit [the official website](http://bueltge.de/wordpress-admin-theme-adminimize/674/ "Adminimize") for further details and the latest information on this plugin.
 
 = What does this plugin do? =
 The plugin changes the administration backend and gives you the power to assign rights on certain parts. Admins can activate/deactivate every part of the menu and even parts of the submenu. Meta fields can be administered separately for posts and pages. Certain parts of the write menu can be deactivated separately for admins or non-admins. The header of the backend is minimized and optimized to give you more space and the structure of the menu gets changed to make it more logical - this can all be done per user so each user can have his own settings.
@@ -71,17 +69,6 @@ The plugin changes the administration backend and gives you the power to assign 
 1. remove items on custom post types
 1. ... many more
 
-= Localizations =
-* Also Thanks to [Ovidio](http://pacura.ru/ "pacaru.ru") for an translations the details in english and [G&uuml;rkan G&uuml;r](http://www.seqizz.net/ "G&uuml;rkan G&uuml;r") for translation in turkish.
-* Thanks to [Gabriel Scheffer](http://www.gabrielscheffer.com.ar "Gabriel Scheffer") for the spanish language files.
-* Thanks to [Andrea Piccinelli] for the italian language files.
-* Thanks to [Fat Cow](http://www.fatcow.com/ "Fat Cow") for the belarussian language files.
-* Thanks to [Rene](http://wpwebshop.com/ "wpwebshop.com") for dutch translation.
-* Thanks to [GeorgWP](http://wordpress.blogos.dk/s%C3%B8g-efter-downloads/?did=208 "wordpress.blogos.dk/s%C3%B8g-efter-downloads/?did=208") for danish language files.
-* Thanks to [Scavenger](http://www.photos-marseille.fr) for french language files.
-* Thanks to [Outshine Solutions](http://outshinesolutions.com/web-hosting/web-hosting-india.html) for hindi language files.
-* Thanks to [ray.s](http://letsbefamous.com/) for irish translation.
-
 = More Plugins = 
 Please see also my [Premium Plugins](http://wpplugins.com/author/malo.conny/). Maybe you find an solution for your requirement.
 
@@ -112,9 +99,30 @@ See on [the official website](http://bueltge.de/wordpress-admin-theme-adminimize
 1. Adminimize Theme how in WordPress 2.3
 
 == Changelog ==
+= v1.7.24 =
+* Maintenance: add ID for hide html-tab on Edtior also in WP 3.3
+* Bugfixing for WP 3.2.1 with the new functions :(
+
+= v1.7.23 =
+* Maintenance: change function to remove admin bar for WP 3.3, see [Forum item](http://wordpress.org/support/topic/694201)
+* Maintenance: change for USer Info to works also in WP 3.3
+* Security fix: see [diff](http://seclists.org/oss-sec/2012/q1/61)
+
+= v1.7.22 =
+* Security fix for $_GET on the admin-settings-page
+
+= v1.7.21 =
+* SORRY: i had an svn bug; here the cimplete version
+* no changes; only a new commit to svn
+
+= v1.7.20 =
+* fix small bug for use plugin Localization
+* add Dashbaord Widgets to remove for different roles
+
 = v1.7.19 =
 * fix page for links - `link.php`
 * add irish language files
+* add bulgarian language files
 
 = v1.7.18 (06/07/2011) =
 * Fixes Small User info on right top with Admin Bar, also ready for WP 3.2
@@ -215,7 +223,7 @@ See on [the official website](http://bueltge.de/wordpress-admin-theme-adminimize
 * Add fix for deactive user.php/profile.php
 
 = v1.7.1 (17/06/2009) =
-* Add belarussian language file, thanks to [Fat Cow](http://www.fatcow.com/ "Fat Cow")
+* Add belarussian language file, thanks to Fat Cow
 
 = v1.7.1 (16/06/2009) =
 * changes for load userdate on settings themes; better for performance on blogs with many Users
@@ -346,6 +354,18 @@ Good news, this plugin is free for everyone! Since it's released under the GPL, 
 
 = Translations =
 The plugin comes with various translations, please refer to the [WordPress Codex](http://codex.wordpress.org/Installing_WordPress_in_Your_Language "Installing WordPress in Your Language") for more information about activating the translation. If you want to help to translate the plugin to your language, please have a look at the sitemap.pot file which contains all defintions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
+
+= Localizations =
+* Also Thanks to [Ovidio](http://pacura.ru/ "pacaru.ru") for an translations the details in english and [G&uuml;rkan G&uuml;r](http://www.seqizz.net/ "G&uuml;rkan G&uuml;r") for translation in turkish.
+* Thanks to [Gabriel Scheffer](http://www.gabrielscheffer.com.ar "Gabriel Scheffer") for the spanish language files.
+* Thanks to [Andrea Piccinelli] for the italian language files.
+* Thanks to Fat Cow for the belarussian language files.
+* Thanks to [Rene](http://wpwebshop.com/ "wpwebshop.com") for dutch translation.
+* Thanks to [GeorgWP](http://wordpress.blogos.dk/s%C3%B8g-efter-downloads/?did=208 "wordpress.blogos.dk/s%C3%B8g-efter-downloads/?did=208") for danish language files.
+* Thanks to [Scavenger](http://www.photos-marseille.fr) for french language files.
+* Thanks to [Outshine Solutions](http://outshinesolutions.com/web-hosting/web-hosting-india.html) for hindi language files.
+* Thanks to [ray.s](http://letsbefamous.com/) for irish translation.
+* Thanks for bulgarian language files to [Web Geek](http://webhostinggeeks.com/)
 
 
 == Frequently Asked Questions ==

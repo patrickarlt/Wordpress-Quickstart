@@ -13,6 +13,14 @@
  * limitations under the License.
  *
  ******************************************************************************/
+ 
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    margin: 0;
+    outline: 0 none;
+    padding: 0;
+}
 
 #edcal_scrollable {
     /* required settings */ 
@@ -476,3 +484,13 @@ TinyMCE Rich Editor and Media buttons are not currently used
 #nofeedbacklink {
     margin-left: 1em;
 }
+
+#screen-meta #show-edcal-settings-link.show-settings {
+    background-position: right -1px;
+}
+
+#contextual-help-wrap {
+    margin-left: 8px;
+    padding: 0 0 10px;
+}
+

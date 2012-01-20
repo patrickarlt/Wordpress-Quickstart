@@ -2,8 +2,8 @@
 /*
 Plugin Name: Blackbird Pie
 Plugin URI: http://themergency.com/plugins/twitter-blackbird-pie/
-Description: Add tweet visualizations to your site as can be found at http://media.twitter.com/blackbird-pie/. 
-Version: 0.5.1
+Description: Add embedded tweets to your site. Demo http://themergency.com/twitter-blackbird-pie-wordpress-plugin-demo/
+Version: 0.5.3
 Author: Brad Vincent
 Author URI: http://themergency.com
 License: GPL2
@@ -26,20 +26,18 @@ class BlackbirdPie {
         if(!class_exists('WP_Http'))
             include_once(ABSPATH . WPINC . '/class-http.php');
 
-        if (!is_admin()) {
-            //register shortcode
-            add_shortcode(BBP_NAME, array(&$this, 'shortcode'));
-            //register auto embed
-            wp_embed_register_handler( BBP_NAME, BBP_REGEX, array(&$this, 'blackbirdpie_embed_handler'), 10 );
+        //register shortcode
+        add_shortcode(BBP_NAME, array(&$this, 'shortcode'));
+        //register auto embed
+        wp_embed_register_handler( BBP_NAME, BBP_REGEX, array(&$this, 'blackbirdpie_embed_handler'), 10 );
 
-            add_action( 'wp_head', array( &$this, 'embed_head'), -1 );
-        } else {
-            //setup twitter contact info in my profile screen
-            add_filter( 'user_contactmethods', array(&$this, 'twitter_contactmethod'), 10, 1 );
+        add_action( 'wp_head', array( &$this, 'embed_head'), -1 );
+        
+        //setup twitter contact info in my profile screen
+        add_filter( 'user_contactmethods', array(&$this, 'twitter_contactmethod'), 10, 1 );
 
-            //setup WYSIWYG editor
-            $this->add_editor_button();
-        }
+        //setup WYSIWYG editor
+        $this->add_editor_button();
     }
 
     function twitter_contactmethod( $contactmethods ) {
@@ -82,30 +80,6 @@ class BlackbirdPie {
         if ( $load ) {
             add_action( 'wp_enqueue_scripts', array( &$this, 'load_scripts'), 20 );
             add_action( 'wp_print_styles', array( &$this, 'load_styles'), 20 );
-
-            if ( function_exists('get_user_meta') ) {
-
-                if ( ! $handles_cache = wp_cache_get( 'twitter-handles' ) ) {
-
-                    if ( function_exists('get_users') ) {
-                        $users = get_users();
-                    } else {
-                        $users = get_users_of_blog();
-                    }
-
-                    foreach ( $users as $user ) {
-                        $user_id = intval( $user->ID );
-                        $handle = get_user_meta( $user_id, 'twitter', true );
-                        if ( !empty( $handle ) )
-                            $this->handles[$user_id] = str_replace( 'http://twitter.com/', '', $handle );
-                    }
-
-                    wp_cache_set( 'twitter-handles', $this->handles );
-                } else {
-                    $this->handles = $handles_cache;
-                }
-
-            }
         }
 
         return;
@@ -183,14 +157,21 @@ class BlackbirdPie {
         return $output;
     }
 	
-    function shortcode($atts) {
+    function shortcode( $atts ) {
 
         // Extract the attributes
         extract(shortcode_atts(array(
             "id" => false,
-            "url" => false
-        ), $atts));
-
+            "url" => false,
+            "width" => false,
+            "user" => false
+              ), $atts));
+		
+        return $this->render_tweet( $id, $url, $user, $width );
+    }
+ 
+	function render_tweet( $id, $url, $user, $width ) {
+	
         //extract the status ID from $id (incase someone incorrectly used a shortcode like [blackbirdpie id="http://twitter..."])
         if ($id) {
             if (preg_match(BBP_REGEX, $id, $matches)) {
@@ -269,8 +250,8 @@ class BlackbirdPie {
             return apply_filters('bbp_create_tweet', $args);
         }
 
-        return 'There was a problem with the blakbirdpie shortcode';
-    }
+        return 'There was a problem with the blakbirdpie shortcode';		
+	}
  
     function create_tweet_html( $tweet_details, $options = array()) {
         global $post;
@@ -312,12 +293,14 @@ class BlackbirdPie {
         $retweet_url = esc_url( "https://twitter.com/intent/retweet?tweet_id={$id}" );
         $reply_url = esc_url( "https://twitter.com/intent/tweet?in_reply_to={$id}" );
         $favorite_url = esc_url( "https://twitter.com/intent/favorite?tweet_id={$id}" );
-
+        
+        //thanks to beezeee for this code
+        $handle = get_user_meta( $post->post_author, 'twitter', true );
         // If we have a Twitter handle for this post author then we can mark them as 'related' to this tweet
-        if ( !empty ( $this->handles[$post->post_author] ) ) {
-            $retweet_url .= "&related=" . $this->handles[$post->post_author];
-            $reply_url .= "&related=" . $this->handles[$post->post_author];
-            $favorite_url .= "&related=" . $this->handles[$post->post_author];
+        if ( $handle and trim($handle) != '' ) {
+          $retweet_url .= "&related=" . $handle;
+          $reply_url .= "&related=" . $handle;
+          $favorite_url .= "&related=" . $handle;
         }
 
         $tweet = $tweet_details['tweet_text'];

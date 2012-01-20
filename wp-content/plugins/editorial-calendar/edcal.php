@@ -18,8 +18,8 @@
 /*
 Plugin Name: WordPress Editorial Calendar
 Description: The Editorial Calendar makes it possible to see all your posts and drag and drop them to manage your blog.
-Version: 1.4
-Author: Colin Vernon, Justin Evans, Mary Vogt, and Zack Grossbart
+Version: 1.8
+Author: Colin Vernon, Justin Evans, Joachim Kudish, Mary Vogt, and Zack Grossbart
 Author URI: http://www.zackgrossbart.com
 Plugin URI: http://stresslimitdesign.com/editorial-calendar-plugin
 */
@@ -85,37 +85,39 @@ class EdCal {
     /*
      * This function adds our calendar page to the admin UI
      */
-    function edcal_list_add_management_page() {
-        if (function_exists('add_management_page') ) {
-            $page = add_posts_page( __('Calendar', 'editorial-calendar'), __('Calendar', 'editorial-calendar'), 'edit_posts', 'cal', array(&$this, 'edcal_list_admin'));
-            add_action( "admin_print_scripts-$page", array(&$this, 'edcal_scripts'));
-            
-            if( $this->supports_custom_types ) {
-    
-    	        /* 
-    	         * We add one calendar for Posts and then we add a separate calendar for each
-    	         * custom post type.  This calendar will have an URL like this:
-    	         * /wp-admin/edit.php?post_type=podcasts&page=cal_podcasts
-    	         *
-    	         * We can then use the post_type parameter to show the posts of just that custom
-    	         * type and update the labels for each post type.
-    	         */
-    	        $args = array(
-    	            'public'   => true,
-    	            '_builtin' => false
-    	        ); 
-    	        $output = 'names'; // names or objects
-    	        $operator = 'and'; // 'and' or 'or'
-    	        $post_types = get_post_types($args,$output,$operator); 
-            
-    	        foreach ($post_types as $post_type) {
-    	            $page = add_submenu_page('edit.php?post_type=' . $post_type, __('Calendar', 'editorial-calendar'), __('Calendar', 'editorial-calendar'), 'edit_posts', 'cal_' . $post_type, array(&$this, 'edcal_list_admin'));
-    	            add_action( "admin_print_scripts-$page", array(&$this, 'edcal_scripts'));
-    	        }
-    
-    		}
-        }
-    }
+	function edcal_list_add_management_page() {
+	    if (function_exists('add_management_page') ) {
+	        $page = add_posts_page( __('Calendar', 'editorial-calendar'), __('Calendar', 'editorial-calendar'), 'edit_posts', 'cal', array(&$this, 'edcal_list_admin'));
+	        add_action( "admin_print_scripts-$page", array(&$this, 'edcal_scripts'));
+
+	        if( $this->supports_custom_types ) {
+
+		        /* 
+		         * We add one calendar for Posts and then we add a separate calendar for each
+		         * custom post type.  This calendar will have an URL like this:
+		         * /wp-admin/edit.php?post_type=podcasts&page=cal_podcasts
+		         *
+		         * We can then use the post_type parameter to show the posts of just that custom
+		         * type and update the labels for each post type.
+		         */
+		        $args = array(
+		            'public'   => true,
+		            '_builtin' => false
+		        ); 
+		        $output = 'names'; // names or objects
+		        $operator = 'and'; // 'and' or 'or'
+		        $post_types = get_post_types($args,$output,$operator); 
+
+		        foreach ($post_types as $post_type) {
+                    $show_this_post_type = apply_filters("edcal_show_calendar_$post_type", true);
+                    if ($show_this_post_type) {
+                        $page = add_submenu_page('edit.php?post_type=' . $post_type, __('Calendar', 'editorial-calendar'), __('Calendar', 'editorial-calendar'), 'edit_posts', 'cal_' . $post_type, array(&$this, 'edcal_list_admin'));
+                        add_action( "admin_print_scripts-$page", array(&$this, 'edcal_scripts'));
+                    }
+                }    
+            }
+	    }
+	}
     
     /*
      * This is a utility function to open a file add it to our
@@ -298,7 +300,7 @@ class EdCal {
                 edcal.str_feedbackmsg = <?php echo($this->edcal_json_encode(__('<div id="feedbacksection">' . 
                  '<h2>Help us Make the Editorial Calendar Better</h2>' .
                  'We are always trying to improve the Editorial Calendar and you can help. May we collect some data about your blog and browser settings to help us improve this plugin?  We\'ll only do it once and your blog will show up on our <a target="_blank" href="http://www.zackgrossbart.com/edcal/mint/">Editorial Calendar Statistics page</a>.<br /><br />' . 
-                 '<button class="button-secondary" onclick="edcal.doFeedback();">Collect Anonymous Data</button> ' . 
+                 '<button class="button-secondary" onclick="edcal.doFeedback();">Collect Data</button> ' . 
                  '<a href="#" id="nofeedbacklink" onclick="edcal.noFeedback(); return false;">No thank you</a></div>', 'editorial-calendar'))) ?>;
     
                 edcal.str_feedbackdone = <?php echo($this->edcal_json_encode(__('<h2>We\'re done</h2>We\'ve finished collecting data.  Thank you for helping us make the calendar better.', 'editorial-calendar'))) ?>;
@@ -405,7 +407,7 @@ class EdCal {
     
                     <label>
                         <span class="title"><?php _e('Time', 'editorial-calendar') ?></span>
-                        <span class="input-text-wrap"><input type="text" class="ptitle" id="edcal-time" name="time" value="" size="8" readonly="true" maxlength="8" autocomplete="off" /></span>
+                        <span class="input-text-wrap"><input type="text" class="ptitle" id="edcal-time" name="time" value="" size="8" maxlength="8" autocomplete="off" /></span>
                     </label>
     					
                     <label>
@@ -612,7 +614,7 @@ class EdCal {
     
         $post_type = $_GET['post_type'];
         if (!$post_type) {
-            return 'Posts';
+            return __('Posts ', 'editorial-calendar');
         }
     
         $postTypeObj = get_post_type_object($post_type);
@@ -628,7 +630,7 @@ class EdCal {
     
         $post_type = $_GET['post_type'];
         if (!$post_type) {
-            return 'Post';
+            return __('Post ', 'editorial-calendar');
         }
     
         $postTypeObj = get_post_type_object($post_type);
@@ -908,7 +910,7 @@ class EdCal {
          * We finish by returning the latest data for the post in the JSON
          */
         $args = array(
-            'p' => $my_post_id
+            'post__in' => array($my_post_id)
         );
         
         if ($post_type) {

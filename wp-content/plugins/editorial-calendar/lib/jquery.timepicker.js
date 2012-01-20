@@ -57,6 +57,7 @@
     $tpDiv.append($tpList);
     // Append the timPicker to the body and position it.
     var elmOffset = $(elm).offset();
+    
     $tpDiv.appendTo('body').css({
       'top':(elmOffset.top - 48) + "px", 
       'left':elmOffset.left,
@@ -92,8 +93,9 @@
       //Reposition the picker in case the page has changed (other things hidden or shown)
       //and the textbox element is no longer where it was when the tpDiv was first appended to the DOM body.
       var elmOffset = $(elm).offset();
+      
       $tpDiv.css({
-        'top':(elmOffset.top - 48) + "px", 
+        'top':(elmOffset.top + $(elm).height() + 10) + "px", 
         'left':elmOffset.left,
         'width': ($(elm).width() + 5) + "px"
       });
@@ -216,7 +218,10 @@
     startTime: new Date(0, 0, 0, 0, 0, 0),
     endTime: new Date(0, 0, 0, 23, 30, 0),
     separator: ':',
-    show24Hours: true
+    show24Hours: true,
+    timeFormat: 'hh:mm tt',
+    amDesignator: 'AM',
+    pmDesignator: 'PM'
   };
 
   // Private functions.
@@ -239,7 +244,20 @@
     var hours = settings.show24Hours ? h : (((h + 11) % 12) + 1);
     hours = formatHour(hours, settings);
     var minutes = time.getMinutes();
-    return hours + settings.separator + formatNumber(minutes) + (settings.show24Hours ? '' : ((h < 12) ? ' AM' : ' PM'));
+    
+    // Now that we have the current time we take the time format
+    // and replace the time values into that string.
+    var time = settings.timeFormat;
+    time = time.replace('hh', hours);
+    time = time.replace('h', hours);
+    time = time.replace('mm', formatNumber(minutes));
+    if (settings.show24Hours) {
+      time = time.replace(' tt', '');
+    } else {
+      time = time.replace('tt', (h < 12) ? settings.amDesignator : settings.pmDesignator);
+    }
+    
+    return time;
   }
 
   function formatNumber(value) {
@@ -266,10 +284,10 @@
 
       // Convert AM/PM hour to 24-hour format.
       if (!settings.show24Hours) {
-        if (hours === 12 && input.substr('AM') !== -1) {
+        if (hours === 12 && input.substr(settings.amDesignator) !== -1) {
           hours = 0;
         }
-        else if (hours !== 12 && input.indexOf('PM') !== -1) {
+        else if (hours !== 12 && input.indexOf(settings.pmDesignator) !== -1) {
           hours += 12;
         }
       }

@@ -3,7 +3,7 @@
 Plugin Name: Options Framework
 Plugin URI: http://www.wptheming.com
 Description: A framework for building theme options.
-Version: 0.8
+Version: 0.9
 Author: Devin Price
 Author URI: http://www.wptheming.com
 License: GPLv2
@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 /* Basic plugin definitions */
 
-define('OPTIONS_FRAMEWORK_VERSION', '0.8');
+define('OPTIONS_FRAMEWORK_VERSION', '0.9');
 define('OPTIONS_FRAMEWORK_URL', plugin_dir_url( __FILE__ ));
 
 /* Make sure we don't expose any info if called directly */
@@ -43,10 +43,39 @@ add_action('init', 'optionsframework_rolescheck' );
 
 function optionsframework_rolescheck () {
 	if ( current_user_can( 'edit_theme_options' ) ) {
-		// If the user can edit theme options, let the fun begin!
-		add_action( 'admin_menu', 'optionsframework_add_page');
-		add_action( 'admin_init', 'optionsframework_init' );
-		add_action( 'admin_init', 'optionsframework_mlu_init' );
+		$optionsfile = locate_template( array('options.php') );
+		if ($optionsfile) {
+			// If the user can edit theme options, let the fun begin!
+			add_action( 'admin_menu', 'optionsframework_add_page');
+			add_action( 'admin_init', 'optionsframework_init' );
+			add_action( 'admin_init', 'optionsframework_mlu_init' );
+		}
+		else {
+			// Display a notice if options.php isn't present in the theme
+			add_action('admin_notices', 'optionsframework_admin_notice');
+			add_action('admin_init', 'optionsframework_nag_ignore');
+		}
+	}
+}
+
+function optionsframework_admin_notice() {
+	global $pagenow;
+	if ( !is_multisite() && ( $pagenow == 'plugins.php' ||  $pagenow == 'themes.php') ) {
+		global $current_user ;
+		$user_id = $current_user->ID;
+		if ( ! get_user_meta($user_id, 'optionsframework_ignore_notice') ) {
+			echo '<div class="updated optionsframework_setup_nag"><p>'; 
+			printf(__('Your current theme does not have support for the Options Framework plugin.  <a href="%1$s" target="_blank">Learn More</a> | <a href="%2$s">Hide Notice</a>'), 'http://wptheming.com/options-framework-plugin', '?optionsframework_nag_ignore=0'); 
+			echo "</p></div>";
+		}
+	}
+}
+
+function optionsframework_nag_ignore() {
+	global $current_user;
+    $user_id = $current_user->ID;
+    if ( isset($_GET['optionsframework_nag_ignore']) && '0' == $_GET['optionsframework_nag_ignore'] ) {
+        add_user_meta($user_id, 'optionsframework_ignore_notice', 'true', true);
 	}
 }
 
@@ -74,6 +103,7 @@ function optionsframework_delete_options() {
 		}
 	}
 	delete_option('optionsframework');
+	delete_user_meta($user_id, 'optionsframework_ignore_notice', 'true');
 }
 
 /* Loads the file for option sanitization */
@@ -101,12 +131,8 @@ function optionsframework_init() {
 	require_once dirname( __FILE__ ) . '/options-medialibrary-uploader.php';
 	
 	// Loads the options array from the theme
-	if ( $optionsfile = locate_template( array('options.php') ) ) {
-		require_once($optionsfile);
-	}
-	else if (file_exists( dirname( __FILE__ ) . '/options.php' ) ) {
-		require_once dirname( __FILE__ ) . '/options.php';
-	}
+	$optionsfile = locate_template( array('options.php') );
+	require_once($optionsfile);
 	
 	$optionsframework_settings = get_option('optionsframework' );
 	
@@ -184,7 +210,7 @@ function optionsframework_setdefaults() {
 if ( !function_exists( 'optionsframework_add_page' ) ) {
 function optionsframework_add_page() {
 
-	$of_page = add_submenu_page('themes.php', 'Theme Options', 'Theme Options', 'edit_theme_options', 'options-framework','optionsframework_page');
+	$of_page = add_theme_page('Theme Options', 'Theme Options', 'edit_theme_options', 'options-framework','optionsframework_page');
 	
 	// Adds actions to hook in the required css and javascript
 	add_action("admin_print_styles-$of_page",'optionsframework_load_styles');
@@ -305,7 +331,7 @@ function optionsframework_validate( $input ) {
 				continue;
 			}
 
-			$id = preg_replace( '/\W/', '', strtolower( $option['id'] ) );
+			$id = preg_replace( '/[^a-zA-Z0-9._\-]/', '', strtolower( $option['id'] ) );
 
 			// Set checkbox to false if it wasn't sent in the $_POST
 			if ( 'checkbox' == $option['type'] && ! isset( $input[$id] ) ) {

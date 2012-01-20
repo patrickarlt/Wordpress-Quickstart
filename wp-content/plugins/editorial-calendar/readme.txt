@@ -1,9 +1,9 @@
 ﻿=== Editorial Calendar ===
-Contributors: cvernon, justinstresslimit, MaryVogt, zgrossbart
+Contributors: cvernon, justinstresslimit, jkudish, MaryVogt, zgrossbart
 Tags: posts, post, calendar, AJAX, admin, administration
 Requires at least: 2.8.5
-Tested up to: 3.2
-Stable tag: 1.4
+Tested up to: 3.3.1
+Stable tag: 1.8
 
 The Editorial Calendar makes it possible to see all your posts and drag and drop them to manage your blog.
 
@@ -48,6 +48,8 @@ An editorial calendar is simply a plan for your blog.  It is thinking ahead abou
 = What are other people saying about the calendar? =
 
 From time to time people write articles about the editorial calendar.  We appreciate every one.
+
+<a href="http://www.dailyblogtips.com/5-reasons-youll-love-the-wordpress-editorial-calendar/">5 Reasons You’ll Love the WordPress Editorial Calendar</a> by <a href="http://www.successfulblogging.com/">Annabel Candy</a>
 
 <a href="http://www.chrisbrogan.com/use-an-editorial-calendar/">Use An Editorial Calendar</a> by <a href="http://www.chrisbrogan.com">Chris Brogan</a>
 
@@ -102,7 +104,7 @@ The editorial calendar follows the Week Starts On preference on the WordPress Ge
 
 = What languages does the calendar support? =
 
-The calendar is available in Brazilian Portuguese, Croatian, Czechoslovakian, English, French, and Greek. 
+The calendar is available in Brazilian Portuguese, Croatian, Czech, Dutch, English, French, German, Greek, Japanese, Norwegian, Polish, and Swedish. 
 
 = Can I add new languages? =
 
@@ -120,7 +122,21 @@ The collected data is all available to the public.  Check out the <a href="http:
 
 = What users can use the calendar? =
 
-The editorial calendar works differently based on your permissions.  Administrators and Editors can use every feature available in the calendar.  Authors can use the calendar to edit and move their own posts, but other people's posts are read-only.  Contributors and Subscribers can't see the calendar.
+The editorial calendar works differently based on your permissions.  
+
+* Administrators and Editors can use every feature available in the calendar.  
+* Authors can use the calendar to edit, move, and publish their own posts, but other people's posts are read-only.  
+* Contributors see everyone's posts and move their own posts, but can only save drafts.
+* Subscribers can't see the calendar.
+
+You can see how it looks for different usres on our <a href="http://www.zackgrossbart.com/extras/sandbox/wp-admin/edit.php?page=cal">Zack's WordPress Sandbox</a> with the following users:
+
+* edgar the Editor
+* alice the Author
+* conrad the Contributor
+* sam the Subscriber
+
+Each of these users has the password test.
 
 = Can I use the editorial calendar with pages? =
 
@@ -150,6 +166,38 @@ Moving published posts can cause problems with some RSS feeds and is generally n
 6. Use a special calendar for each custom post type on your blog.
 
 == Changelog ==
+
+= 1.8 =
+
+The calendar is now translated into Norwegian.
+
+The mouse wheel scrolling with the calendar is now working properly on WordPress 3.3.  Previously it would only scroll up (into the past) and not down (into the future).
+
+The calendar is now translated into Japanese.  Thanks to Masahiro who blogs at <a href="http://www.buslog.net/">http://www.buslog.net</a>.
+
+Support for WordPress version 3.3.1.
+
+= 1.7 =
+
+Version 1.7 supports WordPress 3.3 with fixes to the date display of newly created posts and alignment and margins of each day in the calendar.
+
+The calendar is now scrolling in the right direction with the up and down arrows keys.
+
+= 1.6 =
+
+The calendar is now setting the correct post time for manual set times at noon or midnight instead of changing it by 12 hours.
+
+The up, down, page up, and page down keys are now working properly for moving around in the text in the quick edit dialog.
+
+The calendar is now translated into Swedish.  Thanks to Johan Landström.
+
+= 1.5 =
+
+The post time field in the quick edit dialog is now editable so you can specify any time you want instead of having to pick in 30 minute increments.
+
+The calendar is now translated into German.  Thanks to Matthias Nattke who uses the Editorial Calendar on his site <a href="http://www.kikamagazin.de">Kikamagazin Bloggt</a>.
+
+The calendar is now supporting a special post type "edcal_show_calendar_" to make sure certain custom post types don't show up in the calendar.
 
 = 1.4 =
 

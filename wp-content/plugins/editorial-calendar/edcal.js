@@ -395,7 +395,7 @@ var edcal = {
             newrow += '<div class="dayobj">';
 
             newrow += '<a href="#" adddate="' + _date.toString('MMMM d') + '" class="daynewlink" title="' + 
-                sprintf(edcal.str_newpost, _date.toString(Date.CultureInfo.formatPatterns.monthDay)) + '" ' +
+                sprintf(edcal.str_newpost, edcal.chineseAposWorkaround(_date.toString(Date.CultureInfo.formatPatterns.monthDay))) + '" ' +
                          'onclick="return false;">' + edcal.str_addPostLink + '</a>';
 
             if (_date.toString('dd') == '01') {
@@ -766,14 +766,13 @@ var edcal = {
             but we still need to work aorund the issue.  Hackito
             ergo sum.
           */
-         if (post.time.toUpperCase() === '12:00 PM') {
-             post.time = '12:00';
-         } else if (post.time.toUpperCase() === '12:30 PM') {
-             post.time = '12:30';
-         } else if (post.time.toUpperCase() === '12:00 AM') {
-             post.time = '00:00';
-         } else if (post.time.toUpperCase() === '12:30 AM') {
-             post.time = '00:30';
+         var postTimeUpper = post.time.toUpperCase();
+         if (postTimeUpper.slice(0, 2) === '12' &&
+             postTimeUpper.slice(postTimeUpper.length - 2, postTimeUpper.length) === 'PM') {
+             post.time = '12:' + postTimeUpper.slice(3, 5);
+         } else if (postTimeUpper.slice(0, 2) === '12' &&
+             postTimeUpper.slice(post.time.length - 2, post.time.length) === 'AM') {
+             post.time = '00:' + postTimeUpper.slice(3, 5);
          }
 
          var time;
@@ -811,6 +810,7 @@ var edcal = {
             success: function(res) {
                 jQuery('#edit-slug-buttons').removeClass('tiploading');
                 jQuery('#tooltip').hide();
+                jQuery('#edcal_scrollable').data('scrollable').getConf().keyboard = true;
                 if (res.error) {
                     /*
                      * If there was an error we need to remove the dropped
@@ -849,6 +849,7 @@ var edcal = {
             error: function(xhr) {
                  jQuery('#edit-slug-buttons').removeClass('tiploading');
                  jQuery('#tooltip').hide();
+                 jQuery('#edcal_scrollable').data('scrollable').getConf().keyboard = true;
                  edcal.showError(edcal.general_error);
                  if (xhr.responseText) {
                      edcal.output('savePost xhr.responseText: ' + xhr.responseText);
@@ -878,6 +879,7 @@ var edcal = {
 
         // show tooltip
         jQuery('#tooltip').center().show();
+        jQuery('#edcal_scrollable').data('scrollable').getConf().keyboard = false;
 
         if (!post.id) {
             jQuery('#tooltiptitle').text(edcal.str_newpost_title + post.formatteddate);
@@ -957,6 +959,7 @@ var edcal = {
      */
     hideForm: function() {
         jQuery('#tooltip').hide();
+        jQuery('#edcal_scrollable').data('scrollable').getConf().keyboard = true;
         edcal.resetForm();
     },
 
@@ -1334,7 +1337,8 @@ var edcal = {
         var firstDate = edcal.getDayFromDayId(items.eq(0).children('.row').children('.day:first').attr('id'));
         var lastDate = edcal.getDayFromDayId(items.eq(edcal.weeksPref - 1).children('.row').children('.day:last').attr('id'));
 
-        jQuery('#currentRange').text(firstDate.toString('MMMM yyyy') + ' - ' + lastDate.toString('MMMM yyyy'));
+        jQuery('#currentRange').text(edcal.chineseAposWorkaround(firstDate.toString(Date.CultureInfo.formatPatterns.yearMonth)) + ' - ' + 
+                                     edcal.chineseAposWorkaround(lastDate.toString(Date.CultureInfo.formatPatterns.yearMonth)));
     },
 
     /*
@@ -1530,7 +1534,6 @@ var edcal = {
             time the page refreshes.
           */
          var dayHeight = jQuery('.rowcont:eq(2) .dayobj:first').height() - jQuery('.rowcont:eq(2) .daylabel:first').height() - 6;
-
          jQuery('head').append('<style id="edcal_poststyle" type="text/css">.ui-draggable-dragging {' +
                                     'width: ' + (jQuery('.rowcont:eq(2) .day:first').width() - 5) + 'px;' +
                                '}' +
@@ -1630,13 +1633,15 @@ var edcal = {
         jQuery('#edcal_scrollable').scrollable({
                                     vertical: true,
                                     size: edcal.weeksPref,
+                                    keyboard: false,
                                     keyboardSteps: 1,
                                     speed: 100,
                                     easing: 'linear'
-                                    // use mousewheel plugin
-                                    }).mousewheel();
+                                    });
 
         var api = jQuery('#edcal_scrollable').scrollable();
+        
+        api.getConf().keyboard = false;
 
         /*
            When the user moves the calendar around we remember their
@@ -1654,28 +1659,23 @@ var edcal = {
         }
 
         edcal.moveTo(curDate.clone());
+        
+        jQuery('#edcal_scrollable').bind('mousewheel', function(event, delta) {
+            var dir = delta > 0 ? false : true, vel = Math.abs(delta);
+            edcal.output(dir + ' at a velocity of ' + vel);
 
+            if (!edcal.isMoving && vel > 0.2) {
+                edcal.move(1, dir);
+            }
+            
+            return false;
+        });
+        
         /*
-         * The scrollable handles some basic binding.  This gets us
-         * up arrow, down arrow and the mouse wheel.
+           We are handling all of our own events so we just cancel all events from
+           the scrollable.
          */
         api.onBeforeSeek(function(evt, direction) {
-                         // inside callbacks the "this" variable is a reference to the API
-            /*
-             * Some times for reasons I haven't been able to figure out
-             * the direction is an int instead of a boolean.  I don't
-             * know why, but this works around it.
-             */
-            if (direction === 1) {
-                direction = false;
-            } else if (direction === 3) {
-                direction = true;
-            }
-
-            if (!edcal.isMoving) {
-                edcal.move(1, direction);
-            }
-
             return false;
         });
 
@@ -1687,24 +1687,36 @@ var edcal = {
             //output("evt.altKey: " + evt.altKey);
             //output("evt.keyCode: " + evt.keyCode);
             //output("evt.ctrlKey: " + evt.ctrlKey);
-
-            if ((evt.keyCode === 34 && !(evt.altKey || evt.ctrlKey)) || //page down
-                evt.keyCode === 40 && evt.ctrlKey) {                     // Ctrl+down down arrow
-                edcal.move(edcal.weeksPref, true);
-                return false;
-            } else if ((evt.keyCode === 33 && !(evt.altKey || evt.ctrlKey)) || //page up
-                evt.keyCode === 38 && evt.ctrlKey) {                            // Ctrl+up up arrow
-                edcal.move(edcal.weeksPref, false);
-                return false;
-            } else if (evt.keyCode === 27) { //escape key
+            
+            if (evt.keyCode === 27) { //escape key
                 edcal.hideForm();
                 return false;
             }
-        });
+            
+            if (jQuery('#tooltip').is(':visible')) {
+                return;
+            }
 
+            if ((evt.keyCode === 40 && !(evt.altKey || evt.ctrlKey))) {        // down arrow key
+                edcal.move(1, true);
+                return false;
+            } else if ((evt.keyCode === 38 && !(evt.altKey || evt.ctrlKey))) { // up arrow key
+                edcal.move(1, false);
+                return false;
+            } else if ((evt.keyCode === 34 && !(evt.altKey || evt.ctrlKey)) || //page down
+                evt.keyCode === 40 && evt.ctrlKey) {                           // Ctrl+down down arrow
+                edcal.move(edcal.weeksPref, true);
+                return false;
+            } else if ((evt.keyCode === 33 && !(evt.altKey || evt.ctrlKey)) || //page up
+                evt.keyCode === 38 && evt.ctrlKey) {                           // Ctrl+up up arrow
+                edcal.move(edcal.weeksPref, false);
+                return false;
+            }
+        });
+        
         edcal.getPosts(edcal.nextStartOfWeek(curDate).add(-3).weeks(),
                        edcal.nextStartOfWeek(curDate).add(edcal.weeksPref + 3).weeks());
-
+        
         /*
            Now we bind the listeners for all of our links and the window
            resize.
@@ -1715,7 +1727,7 @@ var edcal = {
                            edcal.nextStartOfWeek(Date.today()).add(edcal.weeksPref + 3).weeks());
             return false;
         });
-
+        
         jQuery('#prevmonth').click(function() {
             edcal.move(edcal.weeksPref, false);
             return false;
@@ -1725,15 +1737,21 @@ var edcal = {
             edcal.move(edcal.weeksPref, true);
             return false;
         });
-
-        function resizeWindow(e) {
+        
+        /*
+           We used to listen to resize events so we could make the calendar the right size
+           for the current window when it changed size, but this was causing a problem with
+           WordPress 3.3 and it never worked properly because the scroll position was a little
+           off so we are just skipping it.
+         */
+        /*function resizeWindow(e) {
             if (edcal.windowHeight != jQuery(window).height()) {
                 jQuery('#edcal_scrollable').css('height', edcal.getCalHeight() + 'px');
                 edcal.windowHeight = jQuery(window).height();
                 edcal.savePosition();
             }
         }
-        jQuery(window).bind('resize', resizeWindow);
+        jQuery(window).bind('resize', resizeWindow);*/
 
         jQuery('#newPostScheduleButton').live('click', function(evt) {
             // if the button is disabled, don't do anything
@@ -2047,8 +2065,15 @@ var edcal = {
                    'id="show-edcal-settings-link" ' +
                    'onclick="edcal.toggleOptions(); return false;" ' +
                    'href="#" ' +
-                   'style="background-image: url(images/screen-options-right.gif);">' + edcal.str_screenoptions + '</a>' +
+                   'style="background-image: url(images/screen-options-right.gif); background-position: right 0px;">' + edcal.str_screenoptions + '</a>' +
              '</div>';
+         
+         if (jQuery('#screen-meta-links').length === 0) {
+             /*
+              * Wordpress 3.3 stopped adding the screen meta section to all the admin pages
+              */
+             jQuery('#screen-meta').after('<div id="screen-meta-links"></div>');
+         }
 
          jQuery('#screen-meta-links').append(html);
     },
@@ -2119,6 +2144,8 @@ var edcal = {
              jQuery('#contextual-help-link-wrap').css('visibility', 'hidden');
 
              jQuery('#contextual-help-wrap').slideDown('normal');
+             
+             jQuery('#screen-meta').show();
 
              jQuery('#show-edcal-settings-link').css('background-image', 'url(images/screen-options-right-up.gif)');
          } else {
@@ -2286,6 +2313,14 @@ var edcal = {
         if (window.console) {
             console.error(msg);
         }
+    },
+    
+    chineseAposWorkaround: function(/*String*/ dateString) {
+        if (Date.CultureInfo.name.indexOf("zh") === 0 ||
+            Date.CultureInfo.name.indexOf("ja") === 0) {
+            return dateString.replace(/'/g, "");
+        }
+        return dateString;
     }
 };
 

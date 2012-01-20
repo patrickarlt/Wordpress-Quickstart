@@ -4,7 +4,7 @@ Tags: options, theme options
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=X238BDP4QGTV2
 Requires at least: 3.0
 Tested up to: 3.2
-Stable tag: 0.8
+Stable tag: 0.9
 License: GPLv2
 
 == Description ==
@@ -51,6 +51,16 @@ You can also watch the video screencast I have at [http://wptheming.com/options-
 
 == Changelog ==
 
+= 0.9 =
+
+* Load thickbox using site_url() to allow for https (props @samargulies)
+* Change santization to use $allowedposttags for textarea and info
+* Display notice if theme doesn't support the Options Framework
+* Single checkboxes now use labels
+* CSS updates for formatting long labels
+* Allows dashes in the options id (props @mantone)
+* Uses add_theme_page over add_submenu_page (props @enile8)
+
 = 0.8 =
 
 * Saves tab states using local storage
@@ -66,8 +76,8 @@ You can also watch the video screencast I have at [http://wptheming.com/options-
 
 = 0.6 =
 
-* Introduces validation filters
-* Better data sanitization and escaping
+* Introduces validation filters (props @_mfields)
+* Better data sanitization and escaping (props @_mfields)
 * Updates labels in options-interface.php
 * Changes how checkboxes saved in database ("0" or "1")
 * Stores typography, backgrounds and multichecks directly as arrays

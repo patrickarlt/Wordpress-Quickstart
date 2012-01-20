@@ -26,7 +26,7 @@ if ( ! function_exists( 'add_action' ) ) {
 					</form>
 					
 					<h4><?php _e('Import', FB_ADMINIMIZE_TEXTDOMAIN ) ?></h4>
-					<form name="import_options" enctype="multipart/form-data" method="post" action="?page=<?php echo $_GET['page'];?>">
+					<form name="import_options" enctype="multipart/form-data" method="post" action="?page=<?php echo esc_attr( $_GET['page'] ); ?>">
 						<?php wp_nonce_field('mw_adminimize_nonce'); ?> 
 						<p><?php _e('Choose a Adminimize (<em>.seq</em>) file to upload, then click <em>Upload file and import</em>.', FB_ADMINIMIZE_TEXTDOMAIN ) ?></p>
 						<p>
